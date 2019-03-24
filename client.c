@@ -29,9 +29,9 @@ int main(int argc, char *argv[]){
         error("error al abrir socket");
 
         server = gethostbyname(argv[1]);
-        if(server == NULL){
+        if(server == NULL)
             fprintf(stderr, "error, no existe el host");
-	}
+
         bzero((char *) &serv_addr, sizeof(serv_addr));
         serv_addr.sin_family = AF_INET;
         bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
@@ -39,10 +39,10 @@ int main(int argc, char *argv[]){
         if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
             error("Fallo en la conexion");
 	while(1){
-            bzero(buffer, 255);
-            fgets(buffer, 255,stdin);
-            n = write(sockfd, buffer, strlen(buffer));
-            if(n < 0)
+        bzero(buffer, 255);
+        fgets(buffer, 255,stdin);
+        n = write(sockfd, buffer, strlen(buffer));
+        if(n < 0)
 		error("Error en escritura");
 	    bzero(buffer, 255);
 	    n = read(sockfd, buffer, 255);
@@ -50,8 +50,8 @@ int main(int argc, char *argv[]){
 		error("Error al leer");
 	    printf("Server: %s",buffer);
 	    int i = strncmp("bye",buffer,3);
-	    if(i == 0)
-	    break;
+	    if (i == 0)
+	        break;
 	}
 	close(sockfd);
 	return 0;

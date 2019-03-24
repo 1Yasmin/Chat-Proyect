@@ -20,16 +20,15 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    int sockfd, newsockfd, portno,n;
+    int sockfd, newsockfd, portno, n;
     char buffer[255];
     //internet address
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t clilen;
 
     sockfd = socket(AF_INET,SOCK_STREAM,0);
-    if(sockfd < 0){
+    if (sockfd < 0)
         error("Error abriendo socket");
-    }
     //clear
     bzero((char *) &serv_addr, sizeof(serv_addr));
     //get portno
