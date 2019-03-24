@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
         error("Error abriendo socket");
     }
     //clear
-    bzero((char *)&serv_addr, sizeof(serv_addr));
+    bzero((char *) &serv_addr, sizeof(serv_addr));
     //get portno
     portno = atoi(argv[1]);
     serv_addr.sin_family = AF_INET;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
         error("fallo en bind");
     }
     //segundo parametro indica la cantidad maxima de clientes
-    listen(sockfd,5);
+    listen(sockfd, 5);
     clilen = sizeof(cli_addr);
     //aceptar conexion nuevo file descriptor
     newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
@@ -57,24 +57,22 @@ int main(int argc, char *argv[]){
         if (n < 0){
             error("fallo en lectura");
         }
-	//show message
+	    //show message
         printf("Client: %s\n",buffer);
         bzero(buffer,255);
         fgets(buffer,255, stdin);
 
         //reply del servidor
         n = write(newsockfd, buffer, strlen(buffer));
-        if(n < 0){
-	    error("Error al escribir");
-	}
+        if (n < 0) 
+	        error("Error al escribir");
 
         int i = strncmp("bye", buffer, 3);
-	//terminar conexion
-	if(i == 0){
-	    break;
-	}
-
-    //endofwhile
+	    //terminar conexion
+	    if (i == 0){
+	        break;
+	    }
+    //end of while
     }
 
     close(newsockfd);
