@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
+#include <pthread.h>
 
 #include "packages/json.hpp"
 #include "utils.cpp"
@@ -18,49 +18,83 @@ std::vector<User *> users;
 const int DEFAULT_PORT = 8080;
 const int BUFFER_SIZE = 1024;
 
+/*
+int accept_connection(int socketfd) {
+  char *result = read_socket(socketfd, BUFFER_SIZE);
+  struct sockaddr_in cli_addr;
+  socklen_t clilen;
+  clilen = sizeof(cli_addr);
 
-
-void *accept_connection(void *socketfd, void *cli_addr_v, void *clilen_v) {
-  char *result = (char *) read_socket(socketfd, (void *) BUFFER_SIZE);
-  struct sockaddr *cli_addr = (struct sockaddr *) cli_addr_v;
-  socklen_t *clilen = (socklen_t *) clilen_v;
  
   if (result == NULL) {                 // Si hay un error 
-    printf("No se pudo conectar!");
-    return (void *) -1;
+    return -1;
   }
+
 
   json response = json::parse(result);
   int code = response["code"];
   string username = response["data"]["username"];
+  
+  printf("HOLA\n");
 
   switch (code)
   {
     case 0: // request connection
-      int user_socket;
-      user_socket = accept(*(int *) socketfd, cli_addr, clilen);    // generar el socket para el usuario A
-      if (user_socket < 0)
-        return (void *) -1;
+      if (socketfd < 0)
+        return -1;
       // crear nuevo usuario agregarlo al array
       User new_user;
-      new_user.init(user_socket, (char *) &username[0]); // crear al nuevo usuario
+      new_user.init(socketfd, (char *) &username[0]); // crear al nuevo usuario
       users.push_back(&new_user); // se añade el nuevo usuario
-      return (void *) 0;
+      return 0;
     default:
-      return (void *) -1;
+      return -1;
+  } 
+  return 1;
+}*/
+
+void *check_messages(void * user_sock) {
+  int sock = *(int *) user_sock;
+  char *result = (char *) malloc(sizeof(char) * BUFFER_SIZE);
+  while (1) {
+    bzero(result, 1024);
+    read(sock, result, BUFFER_SIZE);
+    //write(sock, result, strlen(result));
+    printf("%s\n", result);
+    if (result == NULL) 
+      printf("NO\n");
+
   }
+  printf("Salio por alguna razon");
+  return 0;
+}
 
-  printf("%s\n",response["code"]);
+void *check_connections(void *socketfd) {
+  int result;
+  struct sockaddr_in cli_addr;
+  socklen_t clilen;
+  clilen = sizeof(cli_addr);
+  int socket = *(int *) socketfd;
+  pthread_t user_thread;
+  int user_sock;
+  while (1) {
+    user_sock = accept(socket, (struct sockaddr *)&cli_addr, &clilen);    // generar el socket para el usuario A
+    if (user_sock < 0) 
+      printf("Error de conexión");
+    printf("%d> Se conecto\n", user_sock);
+    // crear thread que escucha el socket de este nuevo usuario
+    if (pthread_create(&user_thread, NULL, check_messages, (void *) &user_sock) < 0)
+      printf("error");
+    //pthread_join(user_thread, NULL);
+  } 
 
-  // convertir a json y verificar que la acción sea conexión si es conexión hacer accept
-  //    y devolver el nuevo socket
-  // de lo contrario retornar -1 para indicar un error
 
 
-  return (void *) result;
+  return (void *) 0;
 }
 
 int main(int argc, char *argv[]) {
+
   int port, socketfd;
   char buffer[255]; // buffer de información
 
@@ -105,16 +139,11 @@ int main(int argc, char *argv[]) {
   listen(socketfd, 5);
   clilen = sizeof(cli_addr);
 
-  //aceptar conexion nuevo file descriptor
-  int newsockfd = accept(socketfd, (struct sockaddr*) &cli_addr, &clilen);
-  //check for failure
-  if (newsockfd < 0){
-    printf("Error al aceptar conexion");
-  }
+  pthread_t connection_thread;
 
-  // Hacer un thread que siempre este escuchando este puerto para conexiones
-  // Dentro de ese thread se hacer el accept y se crea un nuevo objeto usuario con su puerto y se agrega a una lista de usuarios
-  
+
+  int thread_status = pthread_create(&connection_thread, NULL, check_connections, (void *) &socketfd);  
+  pthread_join(connection_thread, NULL);
 
   return 0;
 }

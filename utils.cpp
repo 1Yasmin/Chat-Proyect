@@ -7,13 +7,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-void *read_socket(void *socketfd, void *buffer_size) {
-  int socket = * (int *) socketfd; // cast el socket a int
-  int buffer = * (int *) buffer_size; // cast el tamaño del buffer a int 
+char *read_socket(int socketfd, int buffer_size) {
   char *data;
-  if (read(socket, data, buffer) < 0) {
-    printf("Error al leer socker %d", socket);
-    return (void *) NULL;
+  int a = read(socketfd, data, buffer_size);
+  if (a < 0) {
+    return NULL;
   }
-  return (void *) data; 
+  return data; 
 }

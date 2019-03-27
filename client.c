@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
-    char buffer[255];
+    char buffer[1024];
     if(argc < 3){
         fprintf(stderr,"usage %s hostname port\n", argv[0]);
         exit(1);
@@ -39,19 +39,19 @@ int main(int argc, char *argv[]){
         if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
             error("Fallo en la conexion");
 	while(1){
-        bzero(buffer, 255);
-        fgets(buffer, 255,stdin);
-        n = write(sockfd, buffer, strlen(buffer));
-        if(n < 0)
-		error("Error en escritura");
-	    bzero(buffer, 255);
-	    n = read(sockfd, buffer, 255);
-  	    if(n < 0)
+        bzero(buffer, 1024);
+        fgets(buffer, 1024,stdin);
+        n = write(sockfd, buffer, 1024);
+        if (n < 0)
+		    error("Error en escritura");
+	    bzero(buffer, 1024);
+	    /* n = read(sockfd, buffer, 1024);
+  	        if (n < 0)
 		error("Error al leer");
 	    printf("Server: %s",buffer);
-	    int i = strncmp("bye",buffer,3);
-	    if (i == 0)
-	        break;
+	    int i = strncmp("bye",buffer,3); */
+	    //if (i == 0)
+	        //break;
 	}
 	close(sockfd);
 	return 0;
