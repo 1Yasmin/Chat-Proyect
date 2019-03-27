@@ -59,7 +59,7 @@ void *check_messages(void * user_sock) {
   while (1) {
     bzero(result, 1024);
     read(sock, result, BUFFER_SIZE);
-    //write(sock, result, strlen(result));
+    write(sock, result, strlen(result));
     printf("%s\n", result);
     if (result == NULL) 
       printf("NO\n");
