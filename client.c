@@ -38,6 +38,8 @@ int main(int argc, char *argv[]){
         serv_addr.sin_port = htons(portno);
         if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
             error("Fallo en la conexion");
+	
+	
 	while(1){
         bzero(buffer, 1024);
         fgets(buffer, 1024,stdin);

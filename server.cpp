@@ -80,7 +80,7 @@ void *check_messages(void * user_sock) {
         write(sock, failed_c, BUFFER_SIZE);
 
         delete[] failed_c;
-        close(sock); // close connection
+       // close(sock); // close connection
       } else {
         json success = accept_connection(sock, username, 0);
         char *success_c = to_char(success);
@@ -92,6 +92,10 @@ void *check_messages(void * user_sock) {
         users.push_back(new_user); // se añade el nuevo usuario
       }
     }
+
+    else if (code== 4){
+	printf("se envio codigo 4");
+    }
     // SEND MESSAGE
     else if (1) {
       printf("Quiere enviar un mensaje\n");
@@ -102,7 +106,7 @@ void *check_messages(void * user_sock) {
       char *msg = to_char(msg_str);
       char *to_c = to_char(data["to"]);
 
-      printf("el valor del TO es: %s\n", data["to"]);
+//      printf("el valor del TO es: %s\n", data["to"]);
 
       if (strcmp("null", to_c) == 0) { // se envia a todos
         printf("to es null\n");
@@ -152,9 +156,6 @@ void *check_connections(void *socketfd) {
       printf("error");
     //pthread_join(user_thread, NULL);
   } 
-
-
-
   return (void *) 0;
 }
 
@@ -201,14 +202,12 @@ int main(int argc, char *argv[]) {
       printf("fallo en bind");
 
   // segundo parametro indica la cantidad maxima de clientes
-  listen(socketfd, 5);
-  clilen = sizeof(cli_addr);
+  if(listen(socketfd, 10) == -1)
+	printf("error en el listening");
 
-  pthread_t connection_thread;
+    pthread_t connection_thread;
 
-
-  int thread_status = pthread_create(&connection_thread, NULL, check_connections, (void *) &socketfd);  
-  pthread_join(connection_thread, NULL);
-
-  return 0;
+    int thread_status = pthread_create(&connection_thread, NULL, check_connections, (void *) &socketfd);  
+    pthread_join(connection_thread, NULL);
+    return 0;
 }
