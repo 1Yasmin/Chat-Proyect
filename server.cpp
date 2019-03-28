@@ -63,14 +63,13 @@ void *check_messages(void * user_sock) {
     bzero(result, 1024);
     read(sock, result, BUFFER_SIZE);
     //write(sock, result, strlen(result));
-    int code = get_code(result);
+    int code = get_code(result); 
     json request = json::parse(result);
     // HANDSHAKE
     if (code == 0) {
       // check if username exists
       string username_s = request["data"]["username"];
       char *username = to_char(username_s);
-
       int is_in = username_duplicate(username, users);
 
       if (is_in < 0) {
@@ -80,7 +79,7 @@ void *check_messages(void * user_sock) {
         write(sock, failed_c, BUFFER_SIZE);
 
         delete[] failed_c;
-       // close(sock); // close connection
+        close(sock); // close connection
       } else {
         json success = accept_connection(sock, username, 0);
         char *success_c = to_char(success);
@@ -93,8 +92,12 @@ void *check_messages(void * user_sock) {
       }
     }
 
-    else if (code== 4){
-	printf("se envio codigo 4");
+     else if (code== 4){
+      // TO DO: check if status is 0,1,2
+      int stat = request["data"]["new_status"];
+      // string user = request["data"]["user"];
+     //char* user_id = to_char(user);
+
     }
     // SEND MESSAGE
     else if (1) {

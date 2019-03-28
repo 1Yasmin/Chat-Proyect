@@ -72,4 +72,14 @@ json send_message (char *from, char* message) {
   return response;
 }
 
+//cange status succes
+json fail_status(){
+  json response, data;
+
+  response["code"] = 204;
+  response["data"] = data;
+
+  return response;
+}
+
 

@@ -26,14 +26,6 @@ void error(const char *msg){
 }
 
 
-void delay(int num){
-
-	int mil = 1000*num;
-	clock_t start_time = clock();
-	while(clock() < start_time + mil);
-}
-
-
 int main(int argc, char *argv[]){
     json request_connection;
     int sockfd, portno, n;
@@ -63,27 +55,36 @@ int main(int argc, char *argv[]){
             error("Fallo en la conexion");
        
 	//Envio del nombre del usuario
-	char * username = argv[3];
+	char *username = argv[3];
         request_connection = send_connection(username);
         char *request_connect = to_char(request_connection);
         printf(request_connect);
-       
-	write(sockfd,request_connect,1024);
+        
+	strcpy(buffer, request_connection.dump().c_str());
+	n = write(sockfd,buffer,1024);
+        n = read(sockfd, buffer, 1024);
+          if (n < 0)
+		error("Error al leer");
+        printf("\nServer: %s",buffer);
+	
+	if (n < 0)
+		error("Error en escritura");
 
 	while(1){
-        bzero(buffer, 1024);
-        fgets(buffer, 1024,stdin);
-        n = write(sockfd, buffer, 1024);
-        if (n < 0)
+		printf("\n escriba el mensaje:");
+		bzero(buffer, 1024);
+		fgets(buffer, 1024,stdin);
+		n = write(sockfd, buffer, 1024);
+		if (n < 0)
 		    error("Error en escritura");
-	    bzero(buffer, 1024);
-	    n = read(sockfd, buffer, 1024);
-  	        if (n < 0)
-		error("Error al leer");
-	    printf("Server: %s",buffer);
-	    int i = strncmp("bye",buffer,3); 
-	    if (i == 0)
-	        break;
+		bzero(buffer, 1024);
+		n = read(sockfd, buffer, 1024);
+	  	if (n < 0)
+		    error("Error al leer");
+		printf("Server: %s",buffer);
+	//int i = strncmp("bye",buffer,3); 
+	//if (i == 0)
+	  //   break;
 	}
 	//close(sockfd);
 	return 0;
