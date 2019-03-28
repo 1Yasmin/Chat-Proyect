@@ -11,12 +11,15 @@
 #include "packages/json.hpp"
 #include "utils.cpp"
 #include "user.cpp"
+#include "json_maker.cpp"
 
 using json = nlohmann::json;
 
-std::vector<User *> users;
+std::vector<User> users;
 const int DEFAULT_PORT = 8080;
 const int BUFFER_SIZE = 1024;
+
+
 
 /*
 int accept_connection(int socketfd) {
@@ -59,8 +62,36 @@ void *check_messages(void * user_sock) {
   while (1) {
     bzero(result, 1024);
     read(sock, result, BUFFER_SIZE);
-    write(sock, result, strlen(result));
-    printf("%s\n", result);
+    //write(sock, result, strlen(result));
+    int code = get_code(result);
+    json request = json::parse(result);
+
+    if (code == 0) {
+      // check if username exists
+      string username_s = request["data"]["username"];
+      char *username = to_char(username_s);
+
+      int is_in = username_duplicate(username, users);
+
+      if (is_in < 0) {
+        json failed = reject_connection();
+        char *failed_c = to_char(failed);
+
+        write(sock, failed_c, BUFFER_SIZE);
+
+        delete[] failed_c;
+      } else {
+        json success = accept_connection(sock, username, 0);
+        char *success_c = to_char(success);
+
+        write(sock, success_c, BUFFER_SIZE);
+
+        User new_user;
+        new_user.init(sock, username); // crear al nuevo usuario
+        users.push_back(new_user); // se añade el nuevo usuario
+      }
+    }
+
     if (result == NULL) 
       printf("NO\n");
 

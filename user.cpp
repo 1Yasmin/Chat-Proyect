@@ -22,3 +22,15 @@ class User {
     last_connected = std::time(0);
   }
 };
+
+int username_duplicate(char *username, vector<User> users) {
+  for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
+    User u = (*user);
+    char* u_name = u.username;
+    printf("%s = %s\n", username, u_name);
+    if (strcmp(username, u_name) == 0) {
+      return -1;
+    }
+  }
+  return 0;
+}
