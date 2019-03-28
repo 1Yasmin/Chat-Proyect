@@ -14,6 +14,7 @@
 #include "json_maker.cpp"
 
 using json = nlohmann::json;
+using namespace std;
 
 std::vector<User> users;
 const int DEFAULT_PORT = 8080;
@@ -93,7 +94,7 @@ void *check_messages(void * user_sock) {
       }
     }
     // SEND MESSAGE
-    else if (1) {
+    else if (code == 1) {
       printf("Quiere enviar un mensaje\n");
       // check if username exists
       json data = request["data"];
@@ -124,6 +125,23 @@ void *check_messages(void * user_sock) {
 
       delete[] msg;
 
+    }
+    else if (code == 3) { // get user or usersss
+      std::vector<string> users_vector = request["data"]["users"]; // lista de usuarios 
+      json response, data;
+      response["code"] = 203;
+      data["users"] = {};
+      int s = 0;
+
+      printf("cantidad de usuarios: %s", users_vector);
+
+      for (std::vector<string>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
+        char *username = str_to_char(*user_str);
+        User current_user = *get_user_by_username(username, users);
+        json user_json = get_user_json(current_user);
+        data["users"].push_back(user_json);
+        s = 1;
+      }
     }
 
     if (result == NULL) 
