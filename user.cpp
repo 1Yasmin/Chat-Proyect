@@ -27,10 +27,30 @@ int username_duplicate(char *username, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
     User u = (*user);
     char* u_name = u.username;
-    printf("%s = %s\n", username, u_name);
     if (strcmp(username, u_name) == 0) {
       return -1;
     }
   }
   return 0;
+}
+
+User *get_user_by_id(int id, vector<User> users) {
+  for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
+    int u_id = (*user).id;
+    if (id == u_id) {
+      return &(*user);
+    }
+  }
+  return NULL;
+}
+
+User *get_user_by_username(char *username, vector<User> users) {
+  for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
+    User u = (*user);
+    char* u_name = u.username;
+    if (strcmp(username, u_name) == 0) {
+      return &(*user);
+    }
+  }
+  return NULL;
 }

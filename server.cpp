@@ -65,7 +65,7 @@ void *check_messages(void * user_sock) {
     //write(sock, result, strlen(result));
     int code = get_code(result);
     json request = json::parse(result);
-
+    // HANDSHAKE
     if (code == 0) {
       // check if username exists
       string username_s = request["data"]["username"];
@@ -80,6 +80,7 @@ void *check_messages(void * user_sock) {
         write(sock, failed_c, BUFFER_SIZE);
 
         delete[] failed_c;
+        close(sock); // close connection
       } else {
         json success = accept_connection(sock, username, 0);
         char *success_c = to_char(success);
@@ -90,6 +91,39 @@ void *check_messages(void * user_sock) {
         new_user.init(sock, username); // crear al nuevo usuario
         users.push_back(new_user); // se añade el nuevo usuario
       }
+    }
+    // SEND MESSAGE
+    else if (1) {
+      printf("Quiere enviar un mensaje\n");
+      // check if username exists
+      json data = request["data"];
+      char *username = (*get_user_by_id(sock, users)).username;
+      string msg_str = data["message"];
+      char *msg = to_char(msg_str);
+      char *to_c = to_char(data["to"]);
+
+      printf("el valor del TO es: %s\n", data["to"]);
+
+      if (strcmp("null", to_c) == 0) { // se envia a todos
+        printf("to es null\n");
+        for (std::vector<User>::iterator user = users.begin(); user != users.end(); ++user) {
+          json send_msg = send_message(username, msg);
+          char *msg_c = to_char(send_msg);
+          write((*user).id, msg_c, BUFFER_SIZE);
+          delete[] msg_c;
+        }
+      } else { // solo usuario seleccionado
+        // solo un usuario
+        char *to_username = to_char(data["to"][0]);
+        int to_socket = (*get_user_by_username(to_username, users)).id;
+        json send_msg = send_message(username, msg);
+        char *msg_c = to_char(send_msg);
+        write(to_socket, msg_c, BUFFER_SIZE);
+        delete[] msg_c;
+      }
+
+      delete[] msg;
+
     }
 
     if (result == NULL) 

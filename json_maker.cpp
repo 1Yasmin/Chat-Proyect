@@ -52,4 +52,16 @@ json reject_connection () {
   return response;
 }
 
+// send message
+json send_message (char *from, char* message) {
+  json response, data;
+
+  response["code"] = 2;
+  data["from"] = from;
+  data["message"] = message;
+  response["data"] = data;
+
+  return response;
+}
+
 
