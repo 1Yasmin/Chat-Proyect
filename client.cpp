@@ -1,53 +1,74 @@
-#include <iostream>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include <string.h>
-#include <string>
-
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <nlohmann/json.hpp>
+#include <string.h>
+#include <cstring>
+#include <iostream>
 using namespace std;
+using json = nlohmann::json;
 
-int main(){
+void error(const char *msg){
+    perror(msg);
+    exit(0);
+}
 
-  //crear socket
-  int sock = socket(AF_INET,SOCK_STREAM,0);
-  if(sock == -1)
-    printf("error al crear socket");
-  int port = 8080;
-  string ip_addr = "127.0.0.1";
-  sockaddr_in hint;
-  hint.sin_family = AF_INET;
-  hint.sin_port = htons(port);
-  inet_pton(AF_INET,ip_addr.c_str(),&hint.sin_addr);
-  //conectar
-  int connectRes = connect(sock,(sockaddr*)&hint, sizeof(hint));
-  if(connectRes == -1)
-    printf("error al conectar");
-  //loop
- char buf[4096];
- string userInput;
- do{
-    //escribir
-    cout << ">";
-    getline(cin, userInput);
-    //convertir a jason
+int main(int argc, char *argv[]){
+    json request_connection;
+    int sockfd, portno, n;
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
+    char buffer[1024];
+    //string
+    string user;
+    if(argc < 3){
+        fprintf(stderr,"usage %s hostname port\n", argv[0]);
+        exit(1);
+    }
+    portno = atoi(argv[2]);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd < 0)
+        error("error al abrir socket");
 
-    //mandar al servidor
-    int sendRes = send(sock, userInput.c_str(),userInput.size()+1,0);
-    //revisar si fallo
-    if(sendRes == -1)
-      printf("no se pudo enviar el mensaje");
-      continue;
-    //respuesta del servidor
-    memset(buf,0,4096);
-    int bytesReceived = recv(sock,buf, 4096,0);
-    //mostrar respuesta
-    cout << "SERVER" << string(buf,bytesReceived) <<"\r\n";
-
-  }while(true);
-  //cerrar socket
-  close(sock);
-  return 0;
+        server = gethostbyname(argv[1]);
+        if(server == NULL)
+            fprintf(stderr, "error, no existe el host");
+        char * username = argv[3];
+	printf("%s\n",username);
+        bzero((char *) &serv_addr, sizeof(serv_addr));
+        serv_addr.sin_family = AF_INET;
+        bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
+        serv_addr.sin_port = htons(portno);
+        if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
+            error("Fallo en la conexion");
+       //mandar usuario aqui?
+        request_connection["code"] = 0;
+        request_connection["data"]["username"] = username;
+        //user = request_connection.dump();
+        strcpy(buffer,request_connection.dump().c_str());
+        //strcat(user,request_connection.dump());
+        //cout << buffer << '\n';
+        n = write(sockfd,buffer,1024);
+	while(1){
+        bzero(buffer, 1024);
+        fgets(buffer, 1024,stdin);
+        n = write(sockfd, buffer, 1024);
+        if (n < 0)
+		    error("Error en escritura");
+	    bzero(buffer, 1024);
+	    n = read(sockfd, buffer, 1024);
+  	        if (n < 0)
+		error("Error al leer");
+	    printf("Server: %s",buffer);
+	    int i = strncmp("bye",buffer,3); 
+	    if (i == 0)
+	        break;
+	}
+	close(sockfd);
+	return 0;
 }
