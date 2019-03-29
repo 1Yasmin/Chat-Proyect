@@ -79,11 +79,30 @@ json send_message (char *from, char* message) {
   return response;
 }
 
-//cange status succes
-json fail_status(){
-  json response, data;
+//cange status
 
+json success_status(){
+  json response, data;
   response["code"] = 204;
+  response["data"] = {};
+ 
+  return response;	
+
+}
+
+json reject_status() {
+  json response, data;
+  response["code"] = 504;
+  data["error_message"] = "No se pudo cambiar el status";
+  response["data"] = data;
+  return response;
+}
+
+json change_status(int user_id, int status){
+  json response, data;
+  response["code"] = 4;
+  data["user"] = user_id;
+  data["new_status"] = status;
   response["data"] = data;
 
   return response;

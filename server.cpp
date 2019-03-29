@@ -74,7 +74,8 @@ void *check_messages(void * user_sock) {
           char *username = str_to_char(username_s);
 
           int is_in = username_duplicate(username, users);
-
+      // string user = request["data"]["user"];
+     //char* user_id = to_char(user)
           if (is_in < 0) {
             json failed = reject_connection();
             char *failed_c = to_char(failed);
@@ -168,23 +169,24 @@ void *check_messages(void * user_sock) {
           json data = request["data"];
           int id = data["user"];
           int new_status = data["new_status"];
+          int val_stat = status_admitted(new_status);
           User *user = get_user_by_id(id, users); // user
 
-          if (user != NULL) {
+          if (user != NULL && val_stat == 0) {
             user->status = new_status;
             // todo bien
-            response["code"] = 204;
-            response["data"] = {};
+            response = success_status();
 
             char *response_str = to_char(response);
             write(sock, response_str, BUFFER_SIZE);
+            delete[] response_str;
           } else {
             // todo bien
-            response["code"] = 504;
-            r_data["error_message"] = "Algo ocurrio y no se pudo actualizar el estado \n";
+            response = reject_status();
 
             char *response_str = to_char(response);
             write(sock, response_str, BUFFER_SIZE);
+            delete[] response_str;
           }
 
 
