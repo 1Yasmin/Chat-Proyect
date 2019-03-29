@@ -93,8 +93,26 @@ void *check_messages(void * user_sock) {
     }
 
      else if (code== 4){
-      // TO DO: check if status is 0,1,2
+      // check if status is 0,1,2
       int stat = request["data"]["new_status"];
+      int val_stat = status_admitted(stat);
+      int user = request["data"]["user"];
+      if (val_stat == 0) {
+	char *name = to_char("yas");
+	char *st = to_char("activo");
+        json success = success_status(name, st);
+        char *success_c = to_char(success);
+        write(sock, success_c, BUFFER_SIZE);
+
+      } else {
+	json failed = reject_status();
+        string error_s = failed["data"]["error_message"];
+        char *error = to_char(error_s);
+        write(sock, error, BUFFER_SIZE);
+        delete[] error;
+        
+      }
+
       // string user = request["data"]["user"];
      //char* user_id = to_char(user);
 

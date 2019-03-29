@@ -56,11 +56,9 @@ int main(int argc, char *argv[]){
        
 	//Envio del nombre del usuario
 	char *username = argv[3];
-        request_connection = send_connection(username);
-        char *request_connect = to_char(request_connection);
-        printf(request_connect);
-        
+        request_connection = send_connection(username);       
 	strcpy(buffer, request_connection.dump().c_str());
+
 	n = write(sockfd,buffer,1024);
         n = read(sockfd, buffer, 1024);
           if (n < 0)
@@ -71,20 +69,50 @@ int main(int argc, char *argv[]){
 		error("Error en escritura");
 
 	while(1){
-		printf("\n escriba el mensaje:");
-		bzero(buffer, 1024);
-		fgets(buffer, 1024,stdin);
-		n = write(sockfd, buffer, 1024);
-		if (n < 0)
-		    error("Error en escritura");
-		bzero(buffer, 1024);
-		n = read(sockfd, buffer, 1024);
-	  	if (n < 0)
-		    error("Error al leer");
-		printf("Server: %s",buffer);
-	//int i = strncmp("bye",buffer,3); 
-	//if (i == 0)
-	  //   break;
+		int select = menu(argc, argv);
+		// Broadcasting
+		if(select == 1){
+
+
+		}
+		// Chatear con un usuario 
+		else if(select == 2){
+
+		}
+		// Cambiar status
+		else if(select == 3){
+			bzero(buffer, 1024);
+			fgets(buffer, 1024,stdin);
+			int new_status = status_options();
+			json request_status = change_status(sockfd, new_status);      
+			strcpy(buffer, request_status.dump().c_str());
+			n = write(sockfd, buffer, 1024);
+			if (n < 0)
+			    error("Error en escritura");
+			bzero(buffer, 1024);
+			n = read(sockfd, buffer, 1024);
+		  	if (n < 0)
+			    error("Error al leer");
+			printf("Server: %s",buffer);
+
+
+		}
+		// Lista de usuarios conectados
+		else if(select == 4){
+
+		}
+		// Informacion de un usuario
+		else if(select == 5){
+
+		}
+		// Ayuda
+		else if(select == 6){
+
+		}
+		// Salir
+		else if(select == 7){
+
+		}
 	}
 	//close(sockfd);
 	return 0;

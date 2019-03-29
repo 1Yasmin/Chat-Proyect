@@ -40,18 +40,15 @@ int username_duplicate(char *username, vector<User> users) {
 
 //regresa 0 si el status es admisible
 //regresa /1 de lo contrario
-/*
-int status_admitted(char *status){
-    char* cero = to_char("0");
-    char* uno = to_char("1");
-    char* dos = to_char("2");
-    if(strcmp(status, cero)== 0 || strcmp(status, uno)== 0 || strcmp(status, dos)== 0){
+
+int status_admitted(int status){
+    if(status == 0 || status == 1 || status == 2){
        return 0;
     }
     return -1;
 
 }
-*/
+
 
 User *get_user_by_id(int id, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {

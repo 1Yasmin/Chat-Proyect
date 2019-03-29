@@ -19,45 +19,30 @@ char *read_socket(int socketfd, int buffer_size) {
 }
 
 
+int status_options(){
+	int select;
+	cout<<endl;
+	cout<< "Eliga el numero del nuevo status"<<endl;
+	cout<<" 0. Activo"<< endl;
+	cout<<" 1. Ocupado"<<endl;
+	cout<<" 2. Inactivo"<<endl;
+	cin>>select;
+	return select;
+}
+
+
 int menu(int argc, char *argv[]){
 	int select;
-	do{
-		cout<<" Seleccione una opcion"<<endl;
-		cout<<"1. Broadcasting"<<endl;
-		cout<<"2. Chatear con un usuario"<<endl;
-		cout<<"3. Cambiar de status"<<endl;
-		cout<<"4. Lista de usuarios conectados"<<endl;
-		cout<<"5. informacion de un usuario"<<endl;
-		cout<<"6. Ayuda"<<endl;
-		cout<<"7. Salir"<<endl;
-		cin >> select;
-		switch(select){
-		  case 1: 
-		    cout<< "opcion 1 seleccionada"<<endl;
-		    break;
-		  case 2: 
-		    cout<< "opcion 2 seleccionada"<<endl;
-		    break;
-		  case 3: 
-		    cout<< "opcion 3 seleccionada"<<endl;
-		    break;
-		  case 4: 
-		    cout<< "opcion 4 seleccionada"<<endl;
-		    break;
-		  case 5: 
-		    cout<< "opcion 5 seleccionada"<<endl;
-		    break;
-		  case 6: 
-		    cout<< "opcion 6 seleccionada"<<endl;
-		    break;
-		  case 7: 
-		    cout<< "opcion 7 seleccionada"<<endl;
-		    break;
-		  default:
-		    break;
-		}
-	}
-	while (select != 7);
-	return 0;
+	cout<<endl;
+	cout<<" Seleccione una opcion"<<endl;
+	cout<<"1. Broadcasting"<<endl;
+	cout<<"2. Chatear con un usuario"<<endl;
+	cout<<"3. Cambiar de status"<<endl;
+	cout<<"4. Lista de usuarios conectados"<<endl;
+	cout<<"5. informacion de un usuario"<<endl;
+	cout<<"6. Ayuda"<<endl;
+	cout<<"7. Salir"<<endl;
+	cin >> select;
+	return select;
 }
 
