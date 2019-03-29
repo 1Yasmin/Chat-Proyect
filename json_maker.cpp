@@ -80,11 +80,10 @@ json send_message (char *from, char* message) {
 }
 
 //cange status
-json success_status(char* username, int new_status){
 json success_status(){
   json response, data;
   response["code"] = 204;
-  response["data"] = new_status;
+  response["data"] = {};
 
   return response;	
 

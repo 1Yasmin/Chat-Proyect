@@ -166,20 +166,28 @@ void *check_messages(void * user_sock) {
         }
         else if (code == 4) { // change status
           json response, r_data;
-          json data = request["data"];
-          int id = data["user"];
-          int new_status = data["new_status"];
-          int val_stat = status_admitted(new_status);
-          User *user = get_user_by_id(id, users); // user
+          // check if status is 0,1,2
+	  //con esto responde de exito pero no lo hace, i guess
+
+	  //int new_status = request["data"]["new_status"];
+	  //int val_stat = status_admitted(new_status);
+
+          // con esto no me da una respuesta el server
+	  json data = data["data"];
+	  int id = data["user"];
+	  int new_status = data["new_status"];
+	  int val_stat = status_admitted(new_status);
+          
+          User *user = get_user_by_id(sock, users); // user
 
           if (user != NULL && val_stat == 0) {
             user->status = new_status;
             // todo bien
             response = success_status();
-
             char *response_str = to_char(response);
             write(sock, response_str, BUFFER_SIZE);
             delete[] response_str;
+
           } else {
             // todo bien
             response = reject_status();
@@ -191,32 +199,6 @@ void *check_messages(void * user_sock) {
 
 
         }
-
-	 else if (code== 4){
-	      // check if status is 0,1,2
-	      int stat = request["data"]["new_status"];
-	      int val_stat = status_admitted(stat);
-	      int user = request["data"]["user"];		
-	      if (val_stat == 0) {
-	        User &usuario = (*get_user_by_id(sock,users));
-	        usuario.set_status(stat);
-		char* res = usuario.username;
-	        //int res = (*get_user_by_id(user,users)).status;
-		char *name = to_char("yas");
-		char *st = to_char("activo");
-		json success = success_status(res, sock);
-		char *success_c = to_char(success);
-		write(sock, success_c, BUFFER_SIZE);
-
-	      } else {
-		json failed = reject_status();
-		string error_s = failed["data"]["error_message"];
-		char *error = to_char(error_s);
-		write(sock, error, BUFFER_SIZE);
-		delete[] error;
-		
-	      }
-	}
         if (result == NULL) 
           printf("NO\n");
 
