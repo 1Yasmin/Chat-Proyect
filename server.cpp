@@ -162,10 +162,31 @@ void *check_messages(void * user_sock) {
             write (sock, response_str, BUFFER_SIZE);
           } 
 
-          //printf("cantidad de usuarios: %d \n", users_vector.size());
-
         }
-        else if (code == 4) {
+        else if (code == 4) { // change status
+          json response, r_data;
+          json data = request["data"];
+          int id = data["user"];
+          int new_status = data["new_status"];
+          User *user = get_user_by_id(id, users); // user
+
+          if (user != NULL) {
+            user->status = new_status;
+            // todo bien
+            response["code"] = 204;
+            response["data"] = {};
+
+            char *response_str = to_char(response);
+            write(sock, response_str, BUFFER_SIZE);
+          } else {
+            // todo bien
+            response["code"] = 504;
+            r_data["error_message"] = "Algo ocurrio y no se pudo actualizar el estado \n";
+
+            char *response_str = to_char(response);
+            write(sock, response_str, BUFFER_SIZE);
+          }
+
 
         }
 
@@ -173,7 +194,8 @@ void *check_messages(void * user_sock) {
           printf("NO\n");
 
       } else {
-        printf("no es un json");
+        printf("no es un json \n");
+        // TODO -- write error json para que envie porfavor un json 
       }
     }
 
