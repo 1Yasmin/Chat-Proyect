@@ -191,7 +191,7 @@ void *check_messages(void * user_sock) {
 
 
         }
-<<<<<<< HEAD
+
 	 else if (code== 4){
 	      // check if status is 0,1,2
 	      int stat = request["data"]["new_status"];
@@ -217,9 +217,6 @@ void *check_messages(void * user_sock) {
 		
 	      }
 	}
-=======
-
->>>>>>> 81d4da29c4f0cbd91c041a4a5a033ee4c3801d79
         if (result == NULL) 
           printf("NO\n");
 
