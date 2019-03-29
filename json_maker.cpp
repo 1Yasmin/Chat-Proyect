@@ -39,6 +39,14 @@ json get_data(char *request) {
   return response["data"];
 }
 
+json send_connection(char* username){
+  json response, data;
+  response["code"] = 0;
+  data["username"] = username;
+  response["data"] = data;
+  return response;
+}
+
 // accept connection
 json accept_connection (int id, char* username, int status) {
   json response, data, user;

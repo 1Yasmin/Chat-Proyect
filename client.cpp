@@ -6,10 +6,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <nlohmann/json.hpp>
 #include <string.h>
 #include <cstring>
 #include <iostream>
+#include <time.h>
+
+#include "packages/json.hpp"
+#include "utils.cpp"
+#include "user.cpp"
+#include "json_maker.cpp"
+
+
 using namespace std;
 using json = nlohmann::json;
 
@@ -18,14 +25,22 @@ void error(const char *msg){
     exit(0);
 }
 
+
+void delay(int num){
+
+	int mil = 1000*num;
+	clock_t start_time = clock();
+	while(clock() < start_time + mil);
+}
+
+
 int main(int argc, char *argv[]){
     json request_connection;
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     char buffer[1024];
-    //string
-    string user;
+    
     if(argc < 3){
         fprintf(stderr,"usage %s hostname port\n", argv[0]);
         exit(1);
@@ -38,22 +53,23 @@ int main(int argc, char *argv[]){
         server = gethostbyname(argv[1]);
         if(server == NULL)
             fprintf(stderr, "error, no existe el host");
-        char * username = argv[3];
-	printf("%s\n",username);
+        
+	
         bzero((char *) &serv_addr, sizeof(serv_addr));
         serv_addr.sin_family = AF_INET;
         bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
         serv_addr.sin_port = htons(portno);
         if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
             error("Fallo en la conexion");
-       //mandar usuario aqui?
-        request_connection["code"] = 0;
-        request_connection["data"]["username"] = username;
-        //user = request_connection.dump();
-        strcpy(buffer,request_connection.dump().c_str());
-        //strcat(user,request_connection.dump());
-        //cout << buffer << '\n';
-        n = write(sockfd,buffer,1024);
+       
+	//Envio del nombre del usuario
+	char * username = argv[3];
+        request_connection = send_connection(username);
+        char *request_connect = to_char(request_connection);
+        printf(request_connect);
+       
+	write(sockfd,request_connect,1024);
+
 	while(1){
         bzero(buffer, 1024);
         fgets(buffer, 1024,stdin);
@@ -69,6 +85,6 @@ int main(int argc, char *argv[]){
 	    if (i == 0)
 	        break;
 	}
-	close(sockfd);
+	//close(sockfd);
 	return 0;
 }
