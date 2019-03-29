@@ -74,36 +74,11 @@ void *check_messages(void * user_sock) {
           char *username = str_to_char(username_s);
 
           int is_in = username_duplicate(username, users);
-
-<<<<<<< HEAD
-     else if (code== 4){
-      // check if status is 0,1,2
-      int stat = request["data"]["new_status"];
-      int val_stat = status_admitted(stat);
-      int user = request["data"]["user"];
-      if (val_stat == 0) {
-	char *name = to_char("yas");
-	char *st = to_char("activo");
-        json success = success_status(name, st);
-        char *success_c = to_char(success);
-        write(sock, success_c, BUFFER_SIZE);
-
-      } else {
-	json failed = reject_status();
-        string error_s = failed["data"]["error_message"];
-        char *error = to_char(error_s);
-        write(sock, error, BUFFER_SIZE);
-        delete[] error;
-        
-      }
-
       // string user = request["data"]["user"];
-     //char* user_id = to_char(user);
-=======
+     //char* user_id = to_char(user)
           if (is_in < 0) {
             json failed = reject_connection();
             char *failed_c = to_char(failed);
->>>>>>> 0cecd4927d0108bd17a2fe623f1f1a1819583130
 
             write(sock, failed_c, BUFFER_SIZE);
 
@@ -191,10 +166,27 @@ void *check_messages(void * user_sock) {
           //printf("cantidad de usuarios: %d \n", users_vector.size());
 
         }
-        else if (code == 4) {
+	 else if (code== 4){
+	      // check if status is 0,1,2
+	      int stat = request["data"]["new_status"];
+	      int val_stat = status_admitted(stat);
+	      int user = request["data"]["user"];
+	      if (val_stat == 0) {
+		char *name = to_char("yas");
+		char *st = to_char("activo");
+		json success = success_status(name, st);
+		char *success_c = to_char(success);
+		write(sock, success_c, BUFFER_SIZE);
 
-        }
-
+	      } else {
+		json failed = reject_status();
+		string error_s = failed["data"]["error_message"];
+		char *error = to_char(error_s);
+		write(sock, error, BUFFER_SIZE);
+		delete[] error;
+		
+	      }
+	}
         if (result == NULL) 
           printf("NO\n");
 
