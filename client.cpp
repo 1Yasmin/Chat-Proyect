@@ -84,7 +84,8 @@ int main(int argc, char *argv[]){
 			bzero(buffer, 1024);
 			fgets(buffer, 1024,stdin);
 			int new_status = status_options();
-			json request_status = change_status(sockfd, new_status);      
+			json request_status = change_status(sockfd, new_status);  
+//			print("%d",sockfd);    
 			strcpy(buffer, request_status.dump().c_str());
 			n = write(sockfd, buffer, 1024);
 			if (n < 0)
@@ -103,7 +104,18 @@ int main(int argc, char *argv[]){
 		}
 		// Informacion de un usuario
 		else if(select == 5){
-
+			bzero(buffer, 1024);
+			fgets(buffer, 1024,stdin);
+			json request_usuarios = obtener_usuarios();     
+			strcpy(buffer, request_usuarios.dump().c_str());
+			n = write(sockfd, buffer, 1024);
+			if (n < 0)
+			    error("Error en escritura");
+			bzero(buffer, 1024);
+			n = read(sockfd, buffer, 1024);
+		  	if (n < 0)
+			    error("Error al leer");
+			printf("Server: %s",buffer);
 		}
 		// Ayuda
 		else if(select == 6){

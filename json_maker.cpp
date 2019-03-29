@@ -81,11 +81,11 @@ json send_message (char *from, char* message) {
 
 //cange status
 
-json success_status(char* username, char *new_status){
+json success_status(char* username, int new_status){
   json response, data;
 
   response["code"] = 204;
-  response["data"] = "el status de username new_status";
+  response["data"] = new_status;
 
   return response;	
 
@@ -109,4 +109,10 @@ json change_status(int user_id, int status){
   return response;
 }
 
+json obtener_usuarios(){
+ json response, data;
+  response["code"] = 3;
+  response["data"] = data;
 
+  return response;
+}

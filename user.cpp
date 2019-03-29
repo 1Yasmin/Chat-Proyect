@@ -29,6 +29,10 @@ class User {
   void update_time(){
     last_connected = std::time(0);
   }
+
+  void set_status(int new_status){
+	status = new_status;
+  }
 };
 
 int username_duplicate(char *username, vector<User> users) {
@@ -46,7 +50,7 @@ int username_duplicate(char *username, vector<User> users) {
 //regresa /1 de lo contrario
 
 int status_admitted(int status){
-    if(status == 0 || status == 1 || status == 2){
+    if(status == 0 ||status == 1 || status == 2){
        return 0;
     }
     return -1;

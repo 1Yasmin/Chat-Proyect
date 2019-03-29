@@ -170,11 +170,15 @@ void *check_messages(void * user_sock) {
 	      // check if status is 0,1,2
 	      int stat = request["data"]["new_status"];
 	      int val_stat = status_admitted(stat);
-	      int user = request["data"]["user"];
+	      int user = request["data"]["user"];		
 	      if (val_stat == 0) {
+	        User &usuario = (*get_user_by_id(sock,users));
+	        usuario.set_status(stat);
+		char* res = usuario.username;
+	        //int res = (*get_user_by_id(user,users)).status;
 		char *name = to_char("yas");
 		char *st = to_char("activo");
-		json success = success_status(name, st);
+		json success = success_status(res, sock);
 		char *success_c = to_char(success);
 		write(sock, success_c, BUFFER_SIZE);
 
