@@ -70,11 +70,14 @@ User *get_user_by_id(int id, vector<User> users) {
 User *get_user_by_username(char *username, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
     User u = (*user);
-    char* u_name = u.username;
+    char* u_name =  u.username;
+    printf("%s == %s \n", username, u_name);
     if (strcmp(username, u_name) == 0) {
       return &(*user);
+      exit(0);
     }
   }
+  printf("No encotro a %s\n", username);
   return NULL;
 }
 

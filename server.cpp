@@ -71,7 +71,7 @@ void *check_messages(void * user_sock) {
         if (code == 0) {
           // check if username exists
           string username_s = request["data"]["username"];
-          char *username = to_char(username_s);
+          char *username = str_to_char(username_s);
 
           int is_in = username_duplicate(username, users);
 
@@ -125,20 +125,23 @@ void *check_messages(void * user_sock) {
 
         }
         else if (code == 3) { // get user or usersss
-          json response, data;
-          data = request["data"];
+          json response, data, data_static;
+          data_static = request["data"];
           response["code"] = 203;
           int s = 0;
           
-          if (data.find("users") != data.end()) { // con users
-            std::vector<string> users_vector = data["users"]; // lista de usuarios 
+          if (data_static.find("users") != data_static.end()) { // con users
+            std::vector<string> users_vector = data_static["users"]; // lista de usuarios 
             for (std::vector<string>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
               char *username = str_to_char(*user_str);
-              printf("Elemento: %d \n", username);
-              User current_user = *get_user_by_username(username, users);
-              json user_json = get_user_json(current_user);
-              data["users"].push_back(user_json);
+              printf("Elemento: %s \n", username);
+              User *current_user = get_user_by_username(username, users);
               s = 1;
+              if (current_user != NULL) {
+                printf("es nulo\n");
+                json user_json = get_user_json(*current_user);
+                data["users"].push_back(user_json);
+              }
             }
             if (s == 0) {
               json all_users = get_all_users_json(users);
