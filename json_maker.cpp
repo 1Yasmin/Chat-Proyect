@@ -20,6 +20,13 @@ char *to_char(json js){
   return c;
 }
 
+// get char *
+char *str_to_char(string str) {
+  char *c = new char[str.length() + 1];
+  strcpy(c, str.c_str());
+  return c;
+}
+
 // get code char
 int get_code(char *request) {
   json response = json::parse(request);
@@ -64,7 +71,7 @@ json reject_connection () {
 json send_message (char *from, char* message) {
   json response, data;
 
-  response["code"] = 2;
+  response["code"] = 201;
   data["from"] = from;
   data["message"] = message;
   response["data"] = data;

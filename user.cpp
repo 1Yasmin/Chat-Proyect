@@ -7,6 +7,10 @@
 #include <unistd.h>
  
 using namespace std;
+#include "packages/json.hpp"
+
+using json = nlohmann::json;
+
 
 class User {
   public:
@@ -63,10 +67,33 @@ User *get_user_by_id(int id, vector<User> users) {
 User *get_user_by_username(char *username, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
     User u = (*user);
-    char* u_name = u.username;
+    char* u_name =  u.username;
+    printf("%s == %s \n", username, u_name);
     if (strcmp(username, u_name) == 0) {
       return &(*user);
+      exit(0);
     }
   }
+  printf("No encotro a %s\n", username);
   return NULL;
+}
+
+json get_user_json(User user) {
+  json user_json;
+  user_json["id"] = user.id;
+  user_json["username"] = user.username;
+  user_json["status"] = user.status;
+  user_json["last_connected"] = user.last_connected;
+
+  return user_json;
+}
+
+json get_all_users_json(vector<User> users) {
+  json data;
+  data["users"] = {};
+  for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
+    data["users"].push_back(get_user_json(*user));
+  }
+
+  return data;
 }
