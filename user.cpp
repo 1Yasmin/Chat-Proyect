@@ -1,6 +1,10 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>    
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
  
 using namespace std;
 #include "packages/json.hpp"
@@ -31,18 +35,27 @@ int username_duplicate(char *username, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {
     User u = (*user);
     char* u_name = u.username;
-    int u_id = u.id;
-    int u_status = u.status;
-    int u_itime = u.last_connected;
-    printf("El id del usuario es: %d", u_id);
-    printf("El status del usuario es: %d", u_status);
-    printf("El tiempo de coneccion usuario es: %d", u_itime);
     if (strcmp(username, u_name) == 0) {
       return -1;
     }
   }
   return 0;
 }
+
+//regresa 0 si el status es admisible
+//regresa /1 de lo contrario
+/*
+int status_admitted(char *status){
+    char* cero = to_char("0");
+    char* uno = to_char("1");
+    char* dos = to_char("2");
+    if(strcmp(status, cero)== 0 || strcmp(status, uno)== 0 || strcmp(status, dos)== 0){
+       return 0;
+    }
+    return -1;
+
+}
+*/
 
 User *get_user_by_id(int id, vector<User> users) {
   for (std::vector<User>::iterator user = users.begin() ; user != users.end(); ++user) {

@@ -65,7 +65,7 @@ void *check_messages(void * user_sock) {
     read(sock, result, BUFFER_SIZE);
 
     if (result[0] == '{') { // es un json ?
-        int code = get_code(result);
+      int code = get_code(result);
         json request = json::parse(result);
         // HANDSHAKE
         if (code == 0) {
@@ -82,7 +82,7 @@ void *check_messages(void * user_sock) {
             write(sock, failed_c, BUFFER_SIZE);
 
             delete[] failed_c;
-          // close(sock); // close connection
+            close(sock); // close connection
           } else {
             json success = accept_connection(sock, username, 0);
             char *success_c = to_char(success);
@@ -125,18 +125,16 @@ void *check_messages(void * user_sock) {
 
         }
         else if (code == 3) { // get user or usersss
-          printf("Quiere un user\n");
           json response, data;
           data = request["data"];
           response["code"] = 203;
           int s = 0;
-
-          printf("Adentro\n");
           
           if (data.find("users") != data.end()) { // con users
             std::vector<string> users_vector = data["users"]; // lista de usuarios 
             for (std::vector<string>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
               char *username = str_to_char(*user_str);
+              printf("Elemento: %d \n", username);
               User current_user = *get_user_by_username(username, users);
               json user_json = get_user_json(current_user);
               data["users"].push_back(user_json);
@@ -146,32 +144,41 @@ void *check_messages(void * user_sock) {
               json all_users = get_all_users_json(users);
               data["users"] = all_users;
             }
-            response["data"] = data;
+            response["data"] = data["users"];
             char *response_str = to_char(response);
             write (sock, response_str, BUFFER_SIZE);
           }
           else { // no tiene users
-            response["code"] = 503;
-            json error_data;
-            error_data["error_message"] = "No se envio parametro requerido \"data\"";
-            response["data"] = error_data;
+            response["code"] = 203;
+
+            json all_users = get_all_users_json(users);
+            response["data"] = all_users;
+
             char *response_str = to_char(response);
+            
             write (sock, response_str, BUFFER_SIZE);
           } 
 
           //printf("cantidad de usuarios: %d \n", users_vector.size());
 
         }
+        else if (code == 4) {
+
+        }
 
         if (result == NULL) 
           printf("NO\n");
 
+      } else {
+        printf("no es un json");
       }
     }
 
   printf("Salio por alguna razon");
   return 0;
+  
 }
+
 
 void *check_connections(void *socketfd) {
   int result;
