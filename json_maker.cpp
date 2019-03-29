@@ -81,19 +81,27 @@ json send_message (char *from, char* message) {
 
 //cange status
 
+<<<<<<< HEAD
 json success_status(char* username, int new_status){
+=======
+json success_status(){
+>>>>>>> 81d4da29c4f0cbd91c041a4a5a033ee4c3801d79
   json response, data;
-
   response["code"] = 204;
+<<<<<<< HEAD
   response["data"] = new_status;
 
+=======
+  response["data"] = {};
+ 
+>>>>>>> 81d4da29c4f0cbd91c041a4a5a033ee4c3801d79
   return response;	
 
 }
 
 json reject_status() {
   json response, data;
-  response["code"] = 500;
+  response["code"] = 504;
   data["error_message"] = "No se pudo cambiar el status";
   response["data"] = data;
   return response;

@@ -163,9 +163,35 @@ void *check_messages(void * user_sock) {
             write (sock, response_str, BUFFER_SIZE);
           } 
 
-          //printf("cantidad de usuarios: %d \n", users_vector.size());
+        }
+        else if (code == 4) { // change status
+          json response, r_data;
+          json data = request["data"];
+          int id = data["user"];
+          int new_status = data["new_status"];
+          int val_stat = status_admitted(new_status);
+          User *user = get_user_by_id(id, users); // user
+
+          if (user != NULL && val_stat == 0) {
+            user->status = new_status;
+            // todo bien
+            response = success_status();
+
+            char *response_str = to_char(response);
+            write(sock, response_str, BUFFER_SIZE);
+            delete[] response_str;
+          } else {
+            // todo bien
+            response = reject_status();
+
+            char *response_str = to_char(response);
+            write(sock, response_str, BUFFER_SIZE);
+            delete[] response_str;
+          }
+
 
         }
+<<<<<<< HEAD
 	 else if (code== 4){
 	      // check if status is 0,1,2
 	      int stat = request["data"]["new_status"];
@@ -191,11 +217,15 @@ void *check_messages(void * user_sock) {
 		
 	      }
 	}
+=======
+
+>>>>>>> 81d4da29c4f0cbd91c041a4a5a033ee4c3801d79
         if (result == NULL) 
           printf("NO\n");
 
       } else {
-        printf("no es un json");
+        printf("no es un json \n");
+        // TODO -- write error json para que envie porfavor un json 
       }
     }
 
