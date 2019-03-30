@@ -117,15 +117,20 @@ int main(int argc, char *argv[]){
 			cout<<"Los usuarios conectados son: "<<endl;
                         for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
                                 json temp_user = *it;
-				cout<<"username: "<<temp_user["username"]<<"id: "<<temp_user["id"]<<endl;
+				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<<endl;
 			}
 		}
 		// Informacion de un usuario
 		else if(select == 5){
 			bzero(buffer, 1024);
 			fgets(buffer, 1024,stdin);
-			json request_usuarios = obtener_usuarios();     
+			int user_id;
+			cout<<"Ingrese el id del usuario: ";
+			cin>>user_id;	
+			cout<<"id knsdas:"<<user_id<<endl;		
+			json request_usuarios = obtener_usuario(user_id);     
 			strcpy(buffer, request_usuarios.dump().c_str());
+			printf("aosco als %s", request_usuarios.dump().c_str());
 			n = write(sockfd, buffer, 1024);
 			if (n < 0)
 			    error("Error en escritura");

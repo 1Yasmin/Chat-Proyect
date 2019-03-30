@@ -114,3 +114,12 @@ json obtener_usuarios(){
 
   return response;
 }
+
+json obtener_usuario(int id){
+ json response, data;
+  response["code"] = 3;
+  data["user"] = id;
+  response["data"] = data;
+
+  return response;
+}
