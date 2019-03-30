@@ -115,7 +115,7 @@ json obtener_usuarios(){
   return response;
 }
 
-<<<<<<< HEAD
+
 json obtener_usuario(int id){
  json response, data;
   response["code"] = 3;
@@ -124,7 +124,7 @@ json obtener_usuario(int id){
 
   return response;
 }
-=======
+
 json request_send(char* from,string message){
  json response,data;
   response["code"] = 1;
@@ -133,4 +133,4 @@ json request_send(char* from,string message){
   response["data"] = data;
   return response;
 }
->>>>>>> 3ec2c71763dcdedd61a1892c8ec8064405daa6a6
+
