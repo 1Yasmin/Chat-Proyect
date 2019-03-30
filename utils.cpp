@@ -46,3 +46,9 @@ int menu(int argc, char *argv[]){
 	return select;
 }
 
+string broadcast(){
+	string msg;
+	cout << "Escriba el mensaje: ";
+	cin >> msg;
+	return msg;
+}

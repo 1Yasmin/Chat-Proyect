@@ -114,3 +114,12 @@ json obtener_usuarios(){
 
   return response;
 }
+
+json request_send(char* from,string message){
+ json response,data;
+  response["code"] = 1;
+  data["from"] = from;
+  data["message"] = message;
+  response["data"] = data;
+  return response;
+}

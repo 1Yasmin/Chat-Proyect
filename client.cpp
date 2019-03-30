@@ -74,7 +74,20 @@ int main(int argc, char *argv[]){
 		int select = menu(argc, argv);
 		// Broadcasting
 		if(select == 1){
-
+			bzero(buffer, 1024);
+			fgets(buffer, 1024,stdin);
+			string broadcast_msg = broadcast();
+			json request_broadcast = request_send(username,broadcast_msg);
+			//cout << request_broadcast<<endl;
+			strcpy(buffer,request_broadcast.dump().c_str());
+			n = write(sockfd,buffer,1024);
+			if (n < 0)
+			    error("Error en escritura");
+			bzero(buffer, 1024);
+			n = read(sockfd, buffer, 1024);
+		  	if (n < 0)
+			    error("Error al leer");
+			printf("Server: %s",buffer);
 
 		}
 		// Chatear con un usuario 
