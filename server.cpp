@@ -60,6 +60,7 @@ int accept_connection(int socketfd) {
 void *check_messages(void * user_sock) {
   int sock = *(int *) user_sock;
   char *result = (char *) malloc(sizeof(char) * BUFFER_SIZE);
+  char buffer[1024];
   while (1) {
     bzero(result, 1024);
     read(sock, result, BUFFER_SIZE);
@@ -150,6 +151,7 @@ void *check_messages(void * user_sock) {
             }
             response["data"] = data["users"];
             char *response_str = to_char(response);
+//            strcpy(buffer,response.dump().c_str());
             write (sock, response_str, BUFFER_SIZE);
           }
           else { // no tiene users
@@ -169,16 +171,17 @@ void *check_messages(void * user_sock) {
           // check if status is 0,1,2
 	  //con esto responde de exito pero no lo hace, i guess
 
-	  //int new_status = request["data"]["new_status"];
-	  //int val_stat = status_admitted(new_status);
+	  int new_status = request["data"]["new_status"];
+	  int user_id = request["data"]["user"];
+	  int val_stat = status_admitted(new_status);
 
           // con esto no me da una respuesta el server
-	  json data = data["data"];
-	  int id = data["user"];
-	  int new_status = data["new_status"];
-	  int val_stat = status_admitted(new_status);
+	  //json data = data["data"];
+	 // int id = data["user"];
+	 // int new_status = data["new_status"];
+	 // int val_stat = status_admitted(new_status);
           
-          User *user = get_user_by_id(sock, users); // user
+          User *user = get_user_by_id(user_id, users); // user
 
           if (user != NULL && val_stat == 0) {
             user->status = new_status;

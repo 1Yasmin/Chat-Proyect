@@ -63,6 +63,8 @@ int main(int argc, char *argv[]){
         n = read(sockfd, buffer, 1024);
           if (n < 0)
 		error("Error al leer");
+	json response = json::parse(buffer);
+ 	int user_id = response["data"]["user"]["id"];
         printf("\nServer: %s",buffer);
 	
 	if (n < 0)
@@ -84,8 +86,7 @@ int main(int argc, char *argv[]){
 			bzero(buffer, 1024);
 			fgets(buffer, 1024,stdin);
 			int new_status = status_options();
-			json request_status = change_status(sockfd, new_status);  
-//			print("%d",sockfd);    
+			json request_status = change_status(user_id, new_status);     
 			strcpy(buffer, request_status.dump().c_str());
 			n = write(sockfd, buffer, 1024);
 			if (n < 0)
@@ -100,7 +101,24 @@ int main(int argc, char *argv[]){
 		}
 		// Lista de usuarios conectados
 		else if(select == 4){
-
+			bzero(buffer, 1024);
+			fgets(buffer, 1024,stdin);
+			json request_usuarios = obtener_usuarios();     
+			strcpy(buffer, request_usuarios.dump().c_str());
+			n = write(sockfd, buffer, 1024);
+			if (n < 0)
+			    error("Error en escritura");
+			bzero(buffer, 1024);
+			n = read(sockfd, buffer, 1024);
+		  	if (n < 0)
+			    error("Error al leer");
+			json response = json::parse(buffer);
+		        json users_list = response["data"]["users"];
+			cout<<"Los usuarios conectados son: "<<endl;
+                        for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
+                                json temp_user = *it;
+				cout<<"username: "<<temp_user["username"]<<"id: "<<temp_user["id"]<<endl;
+			}
 		}
 		// Informacion de un usuario
 		else if(select == 5){
