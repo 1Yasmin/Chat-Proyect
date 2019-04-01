@@ -117,9 +117,11 @@ json obtener_usuarios(){
 
 
 json obtener_usuario(int id){
- json response, data;
+ json response, data, users;
+ users = json::array();
+ users.push_back(id);
   response["code"] = 3;
-  data["user"] = id;
+  data["users"] = users;
   response["data"] = data;
 
   return response;

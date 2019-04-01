@@ -110,8 +110,15 @@ int main(int argc, char *argv[]) {
 
 		}
 		// Chatear con un usuario 
-		else if(select == 2){
+		else if (select == 2) {
+			int id; 
+			cout << "Ingrese el id del usuario con el que desea chatear" <<endl;
+			cin >> id;
 
+			json u = obtener_usuario(id);
+			strcpy(buffer, u.dump().c_str());
+			n = write(sockfd, buffer, 1024);
+			bzero(buffer, 1024);
 		}
 		// Cambiar status
 		else if(select == 3){
@@ -140,7 +147,7 @@ int main(int argc, char *argv[]) {
 			n = write(sockfd, buffer, 1024);
 			if (n < 0)
 			    error("Error en escritura");
-			bzero(buffer, 1024);
+			bzero(buffer, 1024);/* 
 			n = read(sockfd, buffer, 1024);
 		  	if (n < 0)
 			    error("Error al leer");
@@ -150,7 +157,7 @@ int main(int argc, char *argv[]) {
                         for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
                                 json temp_user = *it;
 				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<< "	status:"<<temp_user["status"] <<endl;
-			}
+			} */
 		}
 		// Informacion de un usuario
 		else if(select == 5){

@@ -132,11 +132,9 @@ void *check_messages(void * user_sock) {
           int s = 0;
           
           if (data_static.find("users") != data_static.end()) { // con users
-            std::vector<string> users_vector = data_static["users"]; // lista de usuarios 
-            for (std::vector<string>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
-              char *username = str_to_char(*user_str);
-              printf("Elemento: %s \n", username);
-              User *current_user = get_user_by_id(atoi(username), users);
+            std::vector<int> users_vector = data_static["users"]; // lista de usuarios 
+            for (unsigned i = 0; i < users_vector.size(); i++) {
+              User *current_user = get_user_by_id(users_vector[i], users);
               s = 1;
               if (current_user != NULL) {
                 printf("es nulo\n");
@@ -144,6 +142,17 @@ void *check_messages(void * user_sock) {
                 data["users"].push_back(user_json);
               }
             }
+            /* for (std::vector<int>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
+              int user_id = user_str;
+              printf("Elemento: %s \n", user_id);
+              User *current_user = get_user_by_id(user_id, users);
+              s = 1;
+              if (current_user != NULL) {
+                printf("es nulo\n");
+                json user_json = get_user_json(*current_user);
+                data["users"].push_back(user_json);
+              }
+            } */
             if (s == 0) {
               json all_users = get_all_users_json(users);
               data["users"] = all_users;
