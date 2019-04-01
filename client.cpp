@@ -25,34 +25,51 @@ void error(const char *msg){
     exit(0);
 }
 
+void *read_socket(void *socket) {
+    int sockfd = *(int *) socket;
+    while(1) {
+        char *response = (char *) malloc(sizeof(char) * 1024);
+        read(sockfd, response, 1024);
+        string response_str = response;
+        if (!response_str.empty()) {
+            printf("Hola %s\n", response_str.c_str());
+        }
+        free(response);
+    }
+    return (void *)0;
+}
 
-int main(int argc, char *argv[]){
+
+int main(int argc, char *argv[]) {
     json request_connection;
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     char buffer[1024];
+
+	
     
-    if(argc < 3){
+    if (argc < 3){
         fprintf(stderr,"usage %s hostname port\n", argv[0]);
         exit(1);
     }
     portno = atoi(argv[2]);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd < 0)
+
+    if (sockfd < 0) 
         error("error al abrir socket");
 
-        server = gethostbyname(argv[1]);
-        if(server == NULL)
-            fprintf(stderr, "error, no existe el host");
-        
+	server = gethostbyname(argv[1]);
+	if (server == NULL)
+		fprintf(stderr, "error, no existe el host");
 	
-        bzero((char *) &serv_addr, sizeof(serv_addr));
-        serv_addr.sin_family = AF_INET;
-        bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
-        serv_addr.sin_port = htons(portno);
-        if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
-            error("Fallo en la conexion");
+
+	bzero((char *) &serv_addr, sizeof(serv_addr));
+	serv_addr.sin_family = AF_INET;
+	bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
+	serv_addr.sin_port = htons(portno);
+	if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
+		error("Fallo en la conexion");
        
 	//Envio del nombre del usuario
 	char *username = argv[3];
@@ -66,11 +83,16 @@ int main(int argc, char *argv[]){
 	json response = json::parse(buffer);
  	int user_id = response["data"]["user"]["id"];
         printf("\nServer: %s",buffer);
+
+	// read thread
+	pthread_t read_thread;
+	int thread_status = pthread_create(&read_thread, NULL, read_socket, (void *) &sockfd);  
+	
 	
 	if (n < 0)
 		error("Error en escritura");
 
-	while(1){
+	while (1) {
 		int select = menu(argc, argv);
 		// Broadcasting
 		if(select == 1){
@@ -130,7 +152,7 @@ int main(int argc, char *argv[]){
 			cout<<"Los usuarios conectados son: "<<endl;
                         for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
                                 json temp_user = *it;
-				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<<endl;
+				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<< "	status:"<<temp_user["status"] <<endl;
 			}
 		}
 		// Informacion de un usuario

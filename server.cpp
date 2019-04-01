@@ -295,9 +295,9 @@ int main(int argc, char *argv[]) {
   if(listen(socketfd, 10) == -1)
 	printf("error en el listening");
 
-    pthread_t connection_thread;
+  pthread_t connection_thread;
 
-    int thread_status = pthread_create(&connection_thread, NULL, check_connections, (void *) &socketfd);  
-    pthread_join(connection_thread, NULL);
-    return 0;
+  int thread_status = pthread_create(&connection_thread, NULL, check_connections, (void *) &socketfd);  
+  pthread_join(connection_thread, NULL);
+  return 0;
 }
