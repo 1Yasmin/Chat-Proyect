@@ -136,7 +136,7 @@ void *check_messages(void * user_sock) {
             for (std::vector<string>::iterator user_str = users_vector.begin() ; user_str != users_vector.end(); ++user_str) {
               char *username = str_to_char(*user_str);
               printf("Elemento: %s \n", username);
-              User *current_user = get_user_by_username(username, users);
+              User *current_user = get_user_by_id(atoi(username), users);
               s = 1;
               if (current_user != NULL) {
                 printf("es nulo\n");
