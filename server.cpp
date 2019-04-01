@@ -106,7 +106,6 @@ void *check_messages(void * user_sock) {
           char *to_c = to_char(data["to"]);
 
           if (strcmp("null", to_c) == 0) { // se envia a todos
-            printf("to es null\n");
             for (std::vector<User>::iterator user = users.begin(); user != users.end(); ++user) {
               json send_msg = send_message(username, msg);
               char *msg_c = to_char(send_msg);
@@ -151,7 +150,7 @@ void *check_messages(void * user_sock) {
             }
             response["data"] = data["users"];
             char *response_str = to_char(response);
-//            strcpy(buffer,response.dump().c_str());
+            // strcpy(buffer,response.dump().c_str());
             write (sock, response_str, BUFFER_SIZE);
           }
           else { // no tiene users
@@ -169,32 +168,44 @@ void *check_messages(void * user_sock) {
         else if (code == 4) { // change status
           json response, r_data;
           // check if status is 0,1,2
-	  //con esto responde de exito pero no lo hace, i guess
+          //con esto responde de exito pero no lo hace, i guess
 
-	  int new_status = request["data"]["new_status"];
-	  int user_id = request["data"]["user"];
-	  int val_stat = status_admitted(new_status);
+          int new_status = request["data"]["new_status"];
+          int user_id = request["data"]["user"];
+          int val_stat = status_admitted(new_status);
 
           // con esto no me da una respuesta el server
-	  //json data = data["data"];
-	 // int id = data["user"];
-	 // int new_status = data["new_status"];
-	 // int val_stat = status_admitted(new_status);
+          // json data = data["data"];
+          // int id = data["user"];
+          // int new_status = data["new_status"];
+          // int val_stat = status_admitted(new_status);
           
           User *user = get_user_by_id(user_id, users); // user
 
           if (user != NULL && val_stat == 0) {
-            user->status = new_status;
+            User *new_user = new User;
+            new_user->init(user->id, user->username);
+            new_user->set_status(new_status);
+
+            for (unsigned i = 0; i < users.size(); i++) { 
+              if (sock == users[i].id) {
+                users.erase(users.begin() + i);
+                break;
+              }
+            }
+            users.push_back(*new_user);
+
             // todo bien
             response = success_status();
             char *response_str = to_char(response);
             write(sock, response_str, BUFFER_SIZE);
+            json a = get_user_json(*user);
+
             delete[] response_str;
 
           } else {
-            // todo bien
+            // todo mal
             response = reject_status();
-
             char *response_str = to_char(response);
             write(sock, response_str, BUFFER_SIZE);
             delete[] response_str;

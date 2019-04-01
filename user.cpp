@@ -82,6 +82,7 @@ User *get_user_by_username(char *username, vector<User> users) {
   return NULL;
 }
 
+
 json get_user_json(User user) {
   json user_json;
   user_json["id"] = user.id;

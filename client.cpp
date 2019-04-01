@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
 			cout<<"Los usuarios conectados son: "<<endl;
                         for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
                                 json temp_user = *it;
-				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<<endl;
+				cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["status"]<<endl;
 			}
 		}
 		// Informacion de un usuario
