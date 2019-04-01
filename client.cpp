@@ -106,9 +106,6 @@ int main(int argc, char *argv[]) {
 			if (n < 0)
 			    error("Error en escritura");
 			bzero(buffer, 1024);
-			n = read(sockfd, buffer, 1024);
-		  	if (n < 0)
-			    error("Error al leer");
 			printf("Server: %s",buffer);
 
 		}
