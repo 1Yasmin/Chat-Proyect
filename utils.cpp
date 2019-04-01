@@ -52,3 +52,14 @@ string broadcast(){
 	getline(cin,msg);
 	return msg;	
 }
+
+void help_menu(){
+	cout<<"   Menu de ayuda"<<endl;
+	cout<<"1. Envia un mensaje a todos"<<endl;
+	cout<<"2. Envia un mensaje a 1 usuario en especifico con su id"<<endl;
+	cout<<"3. Cambia a activo, ocupado o inactivo"<<endl;
+	cout<<"4. Ve quienes estan conectados"<<endl;
+	cout<<"5. Ve los datos de un usuario"<<endl;
+	cout<<"6. Ayuda"<<endl;
+	cout<<"7. Desconectarse del servidor"<<'\n';
+}

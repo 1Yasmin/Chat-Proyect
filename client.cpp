@@ -177,11 +177,11 @@ int main(int argc, char *argv[]) {
 		}
 		// Ayuda
 		else if(select == 6){
-
+			help_menu();
 		}
 		// Salir
 		else if(select == 7){
-
+			
 		}
 	}
 	//close(sockfd);
