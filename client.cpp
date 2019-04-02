@@ -202,16 +202,17 @@ int main(int argc, char *argv[]) {
 		}
 		// Salir
 		else if(select == 7){			
-			cout<<"jknwokldnqpacq"<<endl;
+			cout<<"Adios"<<endl;
 			bzero(buffer, 1024);
 			fgets(buffer, 1024,stdin);
 			json request_bye = request_goodbye();
 			strcpy(buffer, request_bye.dump().c_str());
 
 			n = write(sockfd, buffer, 1024);
-			if (n < 0)
-			    error("Error en escritura");
-			bzero(buffer, 1024);
+			//if (n < 0)
+			  //  error("Error en escritura");
+			//bzero(buffer, 1024);
+			break;
 			
 		}
 	}
