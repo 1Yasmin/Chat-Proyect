@@ -136,3 +136,23 @@ json request_send(char* from,string message){
   return response;
 }
 
+json request_goodbye(){
+  json response, data;
+  response["code"] = 5;
+  response["data"] = {};
+
+  return response;	
+
+}
+
+json response_goodbye(){
+  json response, data;
+  response["code"] = 205;
+  response["data"] = {};
+
+  return response;	
+
+}
+
+
+

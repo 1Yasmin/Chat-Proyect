@@ -222,6 +222,14 @@ void *check_messages(void * user_sock) {
 
 
         }
+	else if(code == 5){
+		close(sock);
+		json r_bye = response_goodbye();
+		char* r_bye_str = to_char(r_bye);
+		write(sock, r_bye_str, BUFFER_SIZE);
+
+		delete[] r_bye_str;
+	}
         if (result == NULL) 
           printf("NO\n");
 

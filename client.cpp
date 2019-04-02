@@ -30,10 +30,35 @@ void *read_socket(void *socket) {
     while(1) {
         char *response = (char *) malloc(sizeof(char) * 1024);
         read(sockfd, response, 1024);
-        string response_str = response;
-        if (!response_str.empty()) {
-            printf("Hola %s\n", response_str.c_str());
-        }
+//        string response_str = response;
+	int code = get_code(response);
+	// Broadcasting	
+	if (code == 201){
+		cout<<"Chat Broadcasting"<<endl;
+		json response_msg = json::parse(response);
+	        string user_from = response_msg["data"]["from"];
+	        string user_msg = response_msg["data"]["message"];
+		cout<<user_from<<" Mensaje:  "<<user_msg<<endl;
+	}
+	//cambio de estado
+	else if(code== 204){
+		cout<<"El estado se cambio exitosamente"<<endl;	
+	}
+	// lista de usuarios
+	else if (code == 203){
+		json response_users = json::parse(response);
+	        json users_list = response_users["data"]["users"];
+		cout<<"Los usuarios conectados son: "<<endl;
+                for (json::iterator it = users_list.begin(); it != users_list.end(); ++it ){
+			json temp_user = *it;
+			cout<<"username: "<<temp_user["username"]<<"  id: "<<temp_user["id"]<< "  status:"<<temp_user["status"] <<endl;
+			}
+
+
+	}
+        /*if (!response_str.empty()) {
+            printf("Server %s\n", response_str.c_str());
+        }*/
         free(response);
     }
     return (void *)0;
@@ -131,10 +156,6 @@ int main(int argc, char *argv[]) {
 			if (n < 0)
 			    error("Error en escritura");
 			bzero(buffer, 1024);
-			n = read(sockfd, buffer, 1024);
-		  	if (n < 0)
-			    error("Error al leer");
-			printf("Server: %s",buffer);
 
 
 		}
@@ -166,7 +187,7 @@ int main(int argc, char *argv[]) {
 			int user_id;
 			cout<<"Ingrese el id del usuario: ";
 			cin>>user_id;	
-			cout<<"id knsdas:"<<user_id<<endl;		
+			
 			json request_usuarios = obtener_usuario(user_id);     
 			strcpy(buffer, request_usuarios.dump().c_str());
 			printf("aosco als %s", request_usuarios.dump().c_str());
@@ -180,7 +201,17 @@ int main(int argc, char *argv[]) {
 			help_menu();
 		}
 		// Salir
-		else if(select == 7){
+		else if(select == 7){			
+			cout<<"jknwokldnqpacq"<<endl;
+			bzero(buffer, 1024);
+			fgets(buffer, 1024,stdin);
+			json request_bye = request_goodbye();
+			strcpy(buffer, request_bye.dump().c_str());
+
+			n = write(sockfd, buffer, 1024);
+			if (n < 0)
+			    error("Error en escritura");
+			bzero(buffer, 1024);
 			
 		}
 	}
