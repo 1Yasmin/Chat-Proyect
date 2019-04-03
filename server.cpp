@@ -232,6 +232,12 @@ void *check_messages(void * user_sock) {
 		char* r_bye_str = to_char(r_bye);
 		write(sock, r_bye_str, BUFFER_SIZE);
 		delete[] r_bye_str;
+    for (unsigned i = 0; i < users.size(); i++) { 
+      if (sock == users[i].id) {
+        users.erase(users.begin() + i);
+        break;
+      }
+    }
 		sleep(2000);
 		close(sock);
 		pthread_cancel(pthread_self());
