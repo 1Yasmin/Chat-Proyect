@@ -110,7 +110,6 @@ void *check_messages(void * user_sock) {
           cout << data << endl;
 		  cout << ok.empty() << endl;
           if (to.empty() ==1) { // se envia a todos
-			printf("porque estoy aqui\n");
             for (std::vector<User>::iterator user = users.begin(); user != users.end(); ++user) {
               json send_msg = send_message(username, msg);
               char *msg_c = to_char(send_msg);
