@@ -131,10 +131,10 @@ json msg_privado(int id, char *msg) {
 
 json obtener_usuario(int id){
  json response, data, users;
- users = json::array();
+ users = {};
  users.push_back(id);
   response["code"] = 3;
-  data["users"] = users;
+  data["user"] = users;
   response["data"] = data;
 
   return response;
