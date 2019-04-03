@@ -103,11 +103,14 @@ void *check_messages(void * user_sock) {
           char *username = (*get_user_by_id(sock, users)).username;
           string msg_str = data["message"];
           char *msg = to_char(msg_str);
-          char *to_c = to_char(data["to"]);
+		  std::vector<int> to = data["to"];
+		  std::vector<int> ok;
+          //char *to_c = to_char(data["to"]);
 
           cout << data << endl;
-
-          if (strcmp("null", to_c) == 0) { // se envia a todos
+		  cout << ok.empty() << endl;
+          if (to.empty() ==1) { // se envia a todos
+			printf("porque estoy aqui\n");
             for (std::vector<User>::iterator user = users.begin(); user != users.end(); ++user) {
               json send_msg = send_message(username, msg);
               char *msg_c = to_char(send_msg);
@@ -115,9 +118,11 @@ void *check_messages(void * user_sock) {
               delete[] msg_c;
             }
           } else { // solo usuario seleccionado
+			printf("hello there\n");
             // solo un usuario
-            int to_id = data["users"][0];
+            int to_id = to[0];
             cout << data["users"] << endl;
+			printf("id:%d",to_id);
             json send_msg = send_message(username, msg);
             char *msg_c = to_char(send_msg);
             write(to_id, msg_c, BUFFER_SIZE);

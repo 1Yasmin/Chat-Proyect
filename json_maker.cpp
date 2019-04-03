@@ -69,12 +69,16 @@ json reject_connection () {
 
 // send message
 json send_message (char *from, char* message) {
-  json response, data;
-
+  json response, data, to;
+  
+  to = {};
+  
   response["code"] = 201;
   data["from"] = from;
   data["message"] = message;
+  data["to"] = to;
   response["data"] = data;
+  
 
   return response;
 }
@@ -120,7 +124,7 @@ json msg_privado(int id, char *msg) {
   users.push_back(id);
   cout << users << endl;
   response["code"] = 1;
-  data["users"] = users;
+  data["to"] = users;
   data["message"] = msg;
   response["data"] = data;
 
