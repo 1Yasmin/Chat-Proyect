@@ -105,6 +105,8 @@ void *check_messages(void * user_sock) {
           char *msg = to_char(msg_str);
           char *to_c = to_char(data["to"]);
 
+          cout << data << endl;
+
           if (strcmp("null", to_c) == 0) { // se envia a todos
             for (std::vector<User>::iterator user = users.begin(); user != users.end(); ++user) {
               json send_msg = send_message(username, msg);
@@ -114,11 +116,11 @@ void *check_messages(void * user_sock) {
             }
           } else { // solo usuario seleccionado
             // solo un usuario
-            char *to_username = to_char(data["to"][0]);
-            int to_socket = (*get_user_by_username(to_username, users)).id;
+            int to_id = data["users"][0];
+            cout << data["users"] << endl;
             json send_msg = send_message(username, msg);
             char *msg_c = to_char(send_msg);
-            write(to_socket, msg_c, BUFFER_SIZE);
+            write(to_id, msg_c, BUFFER_SIZE);
             delete[] msg_c;
           }
 
@@ -236,7 +238,6 @@ void *check_messages(void * user_sock) {
           printf("NO\n");
 
       } else {
-        printf("no es un json \n");
         // TODO -- write error json para que envie porfavor un json 
       }
     }

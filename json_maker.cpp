@@ -115,6 +115,19 @@ json obtener_usuarios(){
   return response;
 }
 
+json msg_privado(int id, char *msg) {
+  json response, data, users;
+  users.push_back(id);
+  cout << users << endl;
+  response["code"] = 1;
+  data["users"] = users;
+  data["message"] = msg;
+  response["data"] = data;
+
+
+  return response;
+}
+
 
 json obtener_usuario(int id){
  json response, data, users;

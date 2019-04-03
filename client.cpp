@@ -137,12 +137,16 @@ int main(int argc, char *argv[]) {
 		// Chatear con un usuario 
 		else if (select == 2) {
 			int id; 
+			char *msg = (char *) malloc(sizeof(char) * 1024);
 			cout << "Ingrese el id del usuario con el que desea chatear" <<endl;
 			cin >> id;
 
-			json u = obtener_usuario(id);
+			cout << "Ingrese el mensaje privado:" <<endl;
+			cin >> msg;
+			json u = msg_privado(id, msg);
 			strcpy(buffer, u.dump().c_str());
 			n = write(sockfd, buffer, 1024);
+			
 			bzero(buffer, 1024);
 		}
 		// Cambiar status
