@@ -142,9 +142,11 @@ json obtener_usuario(int id){
 
 json request_send(char* from,string message){
  json response,data;
+  std::vector<int> to;
   response["code"] = 1;
   data["from"] = from;
   data["message"] = message;
+   data["to"] = to;
   response["data"] = data;
   return response;
 }
