@@ -134,7 +134,7 @@ json obtener_usuario(int id){
  users = json::array();
  users.push_back(id);
   response["code"] = 3;
-  data["users"] = users;
+  data["user"] = users;
   response["data"] = data;
 
   return response;

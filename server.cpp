@@ -133,8 +133,9 @@ void *check_messages(void * user_sock) {
           response["code"] = 203;
           int s = 0;
           
-          if (data_static.find("users") != data_static.end()) { // con users
-            std::vector<int> users_vector = data_static["users"]; // lista de usuarios 
+          if (data_static.find("user") != data_static.end()) { // con users
+            std::vector<int> users_vector = data_static["user"]; // lista de usuarios 
+            cout << users_vector[0] << endl;
             for (unsigned i = 0; i < users_vector.size(); i++) {
               User *current_user = get_user_by_id(users_vector[i], users);
               s = 1;
@@ -159,7 +160,8 @@ void *check_messages(void * user_sock) {
               json all_users = get_all_users_json(users);
               data["users"] = all_users;
             }
-            response["data"] = data["users"];
+            cout << data["users"].dump() << endl;
+            response["data"]["users"] = data["users"];
             char *response_str = to_char(response);
             // strcpy(buffer,response.dump().c_str());
             write (sock, response_str, BUFFER_SIZE);
