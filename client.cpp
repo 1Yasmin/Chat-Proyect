@@ -140,14 +140,16 @@ int main(int argc, char *argv[]) {
 			char *msg = (char *) malloc(sizeof(char) * 1024);
 			cout << "Ingrese el id del usuario con el que desea chatear" <<endl;
 			cin >> id;
-
 			cout << "Ingrese el mensaje privado:" <<endl;
 			cin >> msg;
 			json u = msg_privado(id, msg);
 			strcpy(buffer, u.dump().c_str());
 			n = write(sockfd, buffer, 1024);
-			
+			if (n < 0)
+			    error("Error en escritura");
 			bzero(buffer, 1024);
+			printf("Server: %s",buffer);
+			
 		}
 		// Cambiar status
 		else if(select == 3){
