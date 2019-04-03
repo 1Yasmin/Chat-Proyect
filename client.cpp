@@ -78,13 +78,13 @@ int main(int argc, char *argv[]) {
         fprintf(stderr,"usage %s hostname port\n", argv[0]);
         exit(1);
     }
-    portno = atoi(argv[2]);
+    portno = atoi(argv[3]);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd < 0) 
         error("error al abrir socket");
 
-	server = gethostbyname(argv[1]);
+	server = gethostbyname(argv[2]);
 	if (server == NULL)
 		fprintf(stderr, "error, no existe el host");
 	
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 		error("Fallo en la conexion");
        
 	//Envio del nombre del usuario
-	char *username = argv[3];
+	char *username = argv[1];
         request_connection = send_connection(username);       
 	strcpy(buffer, request_connection.dump().c_str());
 
