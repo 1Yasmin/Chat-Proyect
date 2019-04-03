@@ -197,6 +197,7 @@ int main(int argc, char *argv[]) {
 			json request_usuarios = obtener_usuario(user_id);     
 			strcpy(buffer, request_usuarios.dump().c_str());
 			printf("aosco als %s", request_usuarios.dump().c_str());
+			sleep(1);
 			n = write(sockfd, buffer, 1024);
 			if (n < 0)
 			    error("Error en escritura");
